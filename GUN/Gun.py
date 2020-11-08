@@ -160,26 +160,36 @@ class gun(MovingObject):
     def fire2_end(self, event):
         global balls, bullet
         bullet += 1
+        if self.mode <= 1:
+            if self.mode == 0:
+                new_ball = ball(self.x,self.y)
+            if self.mode == 1:
+                new_ball = landmine(self.x,self.y)
 
-        if self.mode == 0:
-            new_ball = ball(self.x,self.y)
-        if self.mode == 1:
-            new_ball = landmine(self.x,self.y)
-        if self.mode == 2:
-            new_ball = pellet(self.x,self.y)
-            new_ball.mass=0
+            x = event.pos[0]
+            y = event.pos[1]
+            self.an = -math.acos((x - self.x) / Length(x, y, self.x, self.y))
+            new_ball.vx = self.f2_power * math.cos(self.an) + self.vx
+            new_ball.vy = self.f2_power * math.sin(self.an)
+            balls += [new_ball]
+            self.f2_on = 0
+            self.f2_power = 10
+        elif self.mode == 2:
+            for i in range(self.f2_power):
+                new_ball = pellet()
 
-        x = event.pos[0]
-        y = event.pos[1]
-
-        self.an = -math.acos((x - self.x) / Length(x, y, self.x, self.y))
-        #self.an = math.atan((y - new_ball.y) / (x - new_ball.x))
-        new_ball.vx = self.f2_power * math.cos(self.an) + self.vx
-        new_ball.vy = self.f2_power * math.sin(self.an)
-        balls += [new_ball]
-        self.f2_on = 0
-        self.f2_power = 10
-
+                new_ball.color=BLUE
+                new_ball.mass=0
+                x = event.pos[0]
+                y = event.pos[1]
+                self.an = -math.acos((x - self.x) / Length(x, y, self.x, self.y))
+                new_ball.x=self.x-7*i*math.cos(self.an)
+                new_ball.y=self.y-7*i*math.sin(self.an)
+                new_ball.vx = self.f2_power * math.cos(self.an) + self.vx
+                new_ball.vy = self.f2_power * math.sin(self.an)
+                balls += [new_ball]
+            self.f2_on = 0
+            self.f2_power = 10
 
 
     def targetting(self, event=0):
@@ -347,7 +357,7 @@ def new_game(event=''):
                 if b.hittest(bomb) and bomb.power:
                     bomb.power=0
                     if b.mass == 7:
-                        b.boom()вв
+                        b.boom()
 
             if lives == 0:
                 global score
