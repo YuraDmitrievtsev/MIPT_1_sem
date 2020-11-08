@@ -299,17 +299,17 @@ bombs=[]
 
 
 def new_game(event=''):
-    global gun, t1, balls, bullet, gameover, bombs
+    global gun, t1, balls, bullet, gameover, bombs, score
     sc.fill(WHITE)
 
     bombs = []
     targets = []
-    for i in range(5):
+    for i in range(score+1):
         targets += [target()]
         targets += [aircraft()]
     bullet = 0
     balls = []
-    lives = 10
+    lives = score*2+2
     finished = False
     pygame.display.update()
     clock = pygame.time.Clock()
@@ -360,7 +360,7 @@ def new_game(event=''):
                         b.boom()
 
             if lives == 0:
-                global score
+                #global score
                 score += 1
                 sc.fill(WHITE)
                 font = pygame.font.Font(None, 40)
